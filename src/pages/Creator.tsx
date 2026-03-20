@@ -4,13 +4,9 @@ import DashboardLayout from "@/components/DashboardLayout";
 import DashboardNav from "@/components/DashboardNav";
 import HeaderCard from "@/components/HeaderCard";
 import EventTabs from "@/components/EventTabs";
-import OtpDisplay from "@/components/OtpDisplay";
-import EventOverview from "@/components/EventOverview";
-import PaymentSection from "@/components/PaymentSection";
 import FilesSection from "@/components/FilesSection";
-import RatingSection from "@/components/RatingSection";
 
-const Index = () => {
+const Creator = () => {
   const [selectedEventId, setSelectedEventId] = useState(data.events[0].id);
   const selectedEvent = data.events.find((e) => e.id === selectedEventId) || data.events[0];
 
@@ -18,36 +14,26 @@ const Index = () => {
     <DashboardLayout>
       <DashboardNav />
       <HeaderCard
-        clientName={data.client.name}
+        clientName="Creator Panel"
         occasionType={selectedEvent.occasionType}
         poc={selectedEvent.poc}
         status={selectedEvent.status}
-        tncAccepted={data.client.tncAccepted}
-        role="client"
+        tncAccepted={false}
+        role="creator"
       />
       <EventTabs
         events={data.events}
         selectedId={selectedEventId}
         onSelect={setSelectedEventId}
-        role="client"
+        role="creator"
       />
-      <OtpDisplay startOtp="5558" endOtp="3344" />
-      <EventOverview
-        details={data.selectedEvent.details}
-        eventName={selectedEvent.name}
-        eventDate={selectedEvent.date}
-        meta={data.selectedEvent.meta}
-        role="client"
-      />
-      <PaymentSection payments={data.selectedEvent.payments} role="client" />
       <FilesSection
         files={data.selectedEvent.files}
         meta={data.selectedEvent.meta}
-        role="client"
+        role="creator"
       />
-      <RatingSection rating={data.selectedEvent.rating} role="client" />
     </DashboardLayout>
   );
 };
 
-export default Index;
+export default Creator;

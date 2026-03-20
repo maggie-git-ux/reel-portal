@@ -1,16 +1,20 @@
 import { useState } from "react";
 import { Star, ChevronDown, ChevronUp } from "lucide-react";
 import { toast } from "sonner";
+import type { UserRole } from "@/types/dashboard";
 
 interface RatingSectionProps {
   rating: { value: number; comment: string };
+  role: UserRole;
 }
 
-const RatingSection = ({ rating }: RatingSectionProps) => {
+const RatingSection = ({ rating, role }: RatingSectionProps) => {
   const [open, setOpen] = useState(false);
   const [stars, setStars] = useState(rating.value);
   const [hovered, setHovered] = useState(0);
   const [comment, setComment] = useState(rating.comment);
+
+  const canRate = role === "client";
 
   const handleSubmit = () => {
     if (stars === 0) {
@@ -21,7 +25,7 @@ const RatingSection = ({ rating }: RatingSectionProps) => {
   };
 
   return (
-    <div className="mx-4 mt-3 mb-8 rounded-lg bg-card shadow-sm">
+    <div className="mt-3 mb-8 rounded-lg bg-card shadow-sm">
       <button
         onClick={() => setOpen(!open)}
         className="flex w-full items-center justify-between px-5 py-4 active:scale-[0.99]"
@@ -35,17 +39,22 @@ const RatingSection = ({ rating }: RatingSectionProps) => {
       {open && (
         <div className="border-t border-border px-5 pb-5 pt-4">
           <div className="rounded-md border border-border bg-background p-4">
-            <p className="text-sm font-semibold">Rate Your Experience</p>
+            <p className="text-sm font-semibold">
+              {canRate ? "Rate Your Experience" : "Client Rating"}
+            </p>
 
-            <p className="mt-3 text-xs font-semibold text-muted-foreground">Select Rating</p>
+            <p className="mt-3 text-xs font-semibold text-muted-foreground">
+              {canRate ? "Select Rating" : "Rating"}
+            </p>
             <div className="mt-1 flex gap-1">
               {[1, 2, 3, 4, 5].map((i) => (
                 <button
                   key={i}
-                  onMouseEnter={() => setHovered(i)}
-                  onMouseLeave={() => setHovered(0)}
-                  onClick={() => setStars(i)}
-                  className="transition-transform active:scale-90"
+                  onMouseEnter={() => canRate && setHovered(i)}
+                  onMouseLeave={() => canRate && setHovered(0)}
+                  onClick={() => canRate && setStars(i)}
+                  className={`transition-transform ${canRate ? "active:scale-90 cursor-pointer" : "cursor-default"}`}
+                  disabled={!canRate}
                 >
                   <Star
                     className={`h-7 w-7 ${
@@ -58,21 +67,28 @@ const RatingSection = ({ rating }: RatingSectionProps) => {
               ))}
             </div>
 
-            <p className="mt-4 text-xs font-semibold text-muted-foreground">Comments (Optional)</p>
-            <textarea
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-              placeholder="Share your experience..."
-              className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-              rows={3}
-            />
+            {canRate && (
+              <>
+                <p className="mt-4 text-xs font-semibold text-muted-foreground">Comments (Optional)</p>
+                <textarea
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                  placeholder="Share your experience..."
+                  className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                  rows={3}
+                />
+                <button
+                  onClick={handleSubmit}
+                  className="mt-3 w-full rounded-lg bg-primary/70 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary active:scale-[0.97]"
+                >
+                  Submit Rating
+                </button>
+              </>
+            )}
 
-            <button
-              onClick={handleSubmit}
-              className="mt-3 w-full rounded-lg bg-primary/70 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary active:scale-[0.97]"
-            >
-              Submit Rating
-            </button>
+            {!canRate && comment && (
+              <p className="mt-3 text-sm text-muted-foreground italic">"{comment}"</p>
+            )}
           </div>
         </div>
       )}
