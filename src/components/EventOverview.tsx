@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Calendar, MapPin, Music, Info, User, Phone, Pencil, Save, ChevronDown, ChevronUp } from "lucide-react";
+import type { UserRole } from "@/types/dashboard";
 
 interface EventOverviewProps {
   details: {
@@ -11,19 +12,22 @@ interface EventOverviewProps {
   eventName: string;
   eventDate: string;
   meta: { startTime: string; endTime: string; duration: string };
+  role: UserRole;
 }
 
-const EventOverview = ({ details, eventName, eventDate, meta }: EventOverviewProps) => {
+const EventOverview = ({ details, eventName, eventDate, meta, role }: EventOverviewProps) => {
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState(details);
+
+  const canEdit = role === "admin" || role === "client";
 
   const handleSave = () => {
     setEditing(false);
   };
 
   return (
-    <div className="mx-4 mt-3 rounded-lg bg-card shadow-sm">
+    <div className="mt-3 rounded-lg bg-card shadow-sm">
       <button
         onClick={() => setOpen(!open)}
         className="flex w-full items-center justify-between px-5 py-4 active:scale-[0.99]"
@@ -54,9 +58,11 @@ const EventOverview = ({ details, eventName, eventDate, meta }: EventOverviewPro
                   <p className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground">
                     <Info className="h-3.5 w-3.5" /> Description
                   </p>
-                  <button onClick={() => setEditing(!editing)} className="rounded p-1 hover:bg-muted active:scale-95">
-                    <Pencil className="h-3.5 w-3.5 text-muted-foreground" />
-                  </button>
+                  {canEdit && (
+                    <button onClick={() => setEditing(!editing)} className="rounded p-1 hover:bg-muted active:scale-95">
+                      <Pencil className="h-3.5 w-3.5 text-muted-foreground" />
+                    </button>
+                  )}
                 </div>
                 {editing ? (
                   <textarea

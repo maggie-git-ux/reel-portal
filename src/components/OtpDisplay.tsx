@@ -13,7 +13,7 @@ const OtpDisplay = ({ startOtp, endOtp }: OtpDisplayProps) => {
   };
 
   return (
-    <div className="mx-4 mt-3 grid grid-cols-2 gap-3">
+    <div className="mt-3 grid grid-cols-2 gap-3">
       <div className="flex items-center justify-between rounded-lg border-2 border-success/30 bg-success/5 px-4 py-3">
         <div>
           <p className="text-[10px] font-bold uppercase tracking-wider text-success">Start OTP</p>

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { CreditCard, ChevronDown, ChevronUp, ExternalLink } from "lucide-react";
+import type { UserRole } from "@/types/dashboard";
 
 interface PaymentHistoryItem {
   method: string;
@@ -15,16 +16,17 @@ interface PaymentSectionProps {
     due: number;
     history: PaymentHistoryItem[];
   };
+  role: UserRole;
 }
 
 const fmt = (n: number) => `₹${n.toLocaleString("en-IN")}`;
 
-const PaymentSection = ({ payments }: PaymentSectionProps) => {
+const PaymentSection = ({ payments, role }: PaymentSectionProps) => {
   const [open, setOpen] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
 
   return (
-    <div className="mx-4 mt-3 rounded-lg bg-card shadow-sm">
+    <div className="mt-3 rounded-lg bg-card shadow-sm">
       <button
         onClick={() => setOpen(!open)}
         className="flex w-full items-center justify-between px-5 py-4 active:scale-[0.99]"
@@ -59,7 +61,7 @@ const PaymentSection = ({ payments }: PaymentSectionProps) => {
               </div>
             </div>
 
-            {payments.due > 0 && (
+            {payments.due > 0 && role === "client" && (
               <button className="mt-5 w-full rounded-lg bg-gradient-to-r from-primary to-primary/80 py-3 text-sm font-semibold text-primary-foreground shadow-md transition-transform active:scale-[0.97]">
                 <CreditCard className="mr-2 inline h-4 w-4" />
                 Pay Now ({fmt(payments.due)})
@@ -67,7 +69,6 @@ const PaymentSection = ({ payments }: PaymentSectionProps) => {
             )}
           </div>
 
-          {/* Payment History */}
           {payments.history.length > 0 && (
             <div className="mt-3 rounded-md border border-border bg-background">
               <button

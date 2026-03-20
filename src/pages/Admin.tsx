@@ -4,13 +4,12 @@ import DashboardLayout from "@/components/DashboardLayout";
 import DashboardNav from "@/components/DashboardNav";
 import HeaderCard from "@/components/HeaderCard";
 import EventTabs from "@/components/EventTabs";
-import OtpDisplay from "@/components/OtpDisplay";
 import EventOverview from "@/components/EventOverview";
 import PaymentSection from "@/components/PaymentSection";
 import FilesSection from "@/components/FilesSection";
 import RatingSection from "@/components/RatingSection";
 
-const Index = () => {
+const Admin = () => {
   const [selectedEventId, setSelectedEventId] = useState(data.events[0].id);
   const selectedEvent = data.events.find((e) => e.id === selectedEventId) || data.events[0];
 
@@ -23,31 +22,37 @@ const Index = () => {
         poc={selectedEvent.poc}
         status={selectedEvent.status}
         tncAccepted={data.client.tncAccepted}
-        role="client"
+        role="admin"
       />
       <EventTabs
         events={data.events}
         selectedId={selectedEventId}
         onSelect={setSelectedEventId}
-        role="client"
+        role="admin"
       />
-      <OtpDisplay startOtp="5558" endOtp="3344" />
+
+      {/* Admin: Create Client placeholder */}
+      <div className="mt-4 rounded-lg border-2 border-dashed border-primary/30 bg-primary/5 p-6 text-center">
+        <p className="text-sm font-semibold text-primary">+ Create New Client</p>
+        <p className="mt-1 text-xs text-muted-foreground">Placeholder — connect to backend</p>
+      </div>
+
       <EventOverview
         details={data.selectedEvent.details}
         eventName={selectedEvent.name}
         eventDate={selectedEvent.date}
         meta={data.selectedEvent.meta}
-        role="client"
+        role="admin"
       />
-      <PaymentSection payments={data.selectedEvent.payments} role="client" />
+      <PaymentSection payments={data.selectedEvent.payments} role="admin" />
       <FilesSection
         files={data.selectedEvent.files}
         meta={data.selectedEvent.meta}
-        role="client"
+        role="admin"
       />
-      <RatingSection rating={data.selectedEvent.rating} role="client" />
+      <RatingSection rating={data.selectedEvent.rating} role="admin" />
     </DashboardLayout>
   );
 };
 
-export default Index;
+export default Admin;

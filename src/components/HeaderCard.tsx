@@ -1,4 +1,5 @@
-import { Phone, User, CheckCircle2 } from "lucide-react";
+import { Phone, User, CheckCircle2, Shield, Camera } from "lucide-react";
+import type { UserRole } from "@/types/dashboard";
 
 interface HeaderCardProps {
   clientName: string;
@@ -6,27 +7,45 @@ interface HeaderCardProps {
   poc: { name: string; phone: string };
   status: string;
   tncAccepted: boolean;
+  role: UserRole;
 }
 
-const HeaderCard = ({ clientName, occasionType, poc, status, tncAccepted }: HeaderCardProps) => {
+const roleBadge: Record<UserRole, { label: string; icon: React.ReactNode }> = {
+  client: { label: "Client", icon: null },
+  admin: { label: "Admin", icon: <Shield className="h-3 w-3" /> },
+  creator: { label: "Creator", icon: <Camera className="h-3 w-3" /> },
+};
+
+const HeaderCard = ({ clientName, occasionType, poc, status, tncAccepted, role }: HeaderCardProps) => {
+  const badge = roleBadge[role];
+
   return (
     <div className="animate-fade-in-up">
       {/* Brand Bar */}
-      <div className="flex items-center justify-between px-4 py-3">
+      <div className="flex items-center justify-between py-3">
         <h1 className="text-xl font-bold tracking-tight text-primary">
           Recap<span className="text-foreground">Reels</span>
         </h1>
+        {role !== "client" && (
+          <span className="flex items-center gap-1 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
+            {badge.icon} {badge.label}
+          </span>
+        )}
       </div>
 
       {/* Greeting Card */}
-      <div className="mx-4 rounded-lg bg-card p-5 shadow-sm">
+      <div className="rounded-lg bg-card p-5 shadow-sm">
         <div className="flex items-start justify-between">
           <div>
             <h2 className="text-lg font-bold leading-tight">
               Hi, {clientName}!
             </h2>
             <p className="mt-1 text-sm text-muted-foreground">
-              Welcome back! Here's everything about your booking with RecapReels.
+              {role === "admin"
+                ? "Manage events, files, and payments from here."
+                : role === "creator"
+                ? "Upload and manage your creative deliverables."
+                : "Welcome back! Here's everything about your booking with RecapReels."}
             </p>
           </div>
           <span className="shrink-0 rounded-full bg-success px-3 py-1 text-xs font-semibold text-success-foreground">

@@ -1,3 +1,5 @@
+import type { UserRole } from "@/types/dashboard";
+
 interface EventItem {
   id: string;
   name: string;
@@ -9,11 +11,20 @@ interface EventTabsProps {
   events: EventItem[];
   selectedId: string;
   onSelect: (id: string) => void;
+  role: UserRole;
 }
 
-const EventTabs = ({ events, selectedId, onSelect }: EventTabsProps) => {
+const EventTabs = ({ events, selectedId, onSelect, role }: EventTabsProps) => {
   return (
-    <div className="mx-4 mt-4 rounded-lg bg-card p-4 shadow-sm" style={{ animationDelay: "80ms" }}>
+    <div className="mt-4 rounded-lg bg-card p-4 shadow-sm" style={{ animationDelay: "80ms" }}>
+      <div className="flex items-center justify-between mb-3">
+        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Events</p>
+        {role === "admin" && (
+          <button className="rounded-md bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground transition-colors hover:bg-primary/90 active:scale-[0.97]">
+            + New Event
+          </button>
+        )}
+      </div>
       <div className="flex gap-3 overflow-x-auto scroll-hidden pb-1">
         {events.map((event) => {
           const isSelected = event.id === selectedId;
